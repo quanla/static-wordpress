@@ -1,6 +1,7 @@
 import classnames from "classnames";
 import {RComponent} from "../../common/r-component";
 import {articleApi} from "../api/article-api";
+import {MarkDown} from "./markdown";
 
 export class ArticleRoute extends RComponent {
 
@@ -11,7 +12,7 @@ export class ArticleRoute extends RComponent {
             articleContent: null,
         };
 
-        articleApi.getArticleContent("aaa").then((articleContent) => {
+        articleApi.getArticleContent("/sample/article").then((articleContent) => {
             return this.setState({articleContent});
         });
     }
@@ -25,9 +26,7 @@ export class ArticleRoute extends RComponent {
                         Loading...
                     </div>
                 ) : (
-                    <div className="">
-                        {articleContent}
-                    </div>
+                    <MarkDown value={articleContent}/>
                 )}
             </div>
         );

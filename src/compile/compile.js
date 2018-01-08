@@ -4,14 +4,21 @@ const AsyncResolve = require("./async-resolve").AsyncResolve;
 const Cacher = require("./cacher").Cacher;
 const apiConfig = require("../runtime/api/api").apiConfig;
 const {renderToString} = require("react-dom/server");
+// const Path = require("path");
 
 require("jsx-node").install();
 const {BlogApp} = require("../runtime/blog/blog-app.jsx");
 
 global.h = React.createElement;
 
-
-let cacher = Cacher.createCacher((url) => Promise.resolve("OOOOO"));
+let getFileContent = (url) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(process.cwd() + url, "utf8", (err, content) => {
+            resolve(content);
+        });
+    });
+};
+let cacher = Cacher.createCacher(getFileContent);
 apiConfig.setApiImpl({get: (url) => cacher.execute(url)});
 
 let applyIndexTemplate = ((template)=> (vars) => {
