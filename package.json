@@ -1,0 +1,21 @@
+{
+  "name": "static-wordpress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "^6.18.2",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "classnames": "^2.2.5",
+    "jsx-node": "^0.2.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  }
+}
