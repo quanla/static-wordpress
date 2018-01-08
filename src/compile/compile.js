@@ -1,11 +1,17 @@
 const React = require("react");
 const fs = require("fs");
+const apiConfig = require("../runtime/api/api").apiConfig;
 const {renderToString} = require("react-dom/server");
 
 require("jsx-node").install();
-const {ArticleRoute} = require("../runtime/blog/article-route.jsx");
+const {BlogApp} = require("../runtime/blog/blog-app.jsx");
 
 global.h = React.createElement;
+
+apiConfig.setApiImpl({get: (url) => {
+    console.log(url);
+    return Promise.resolve("OOOO");
+}});
 
 let applyIndexTemplate = ((template)=> (vars) => {
     let content = template;
@@ -20,7 +26,7 @@ function compileDir(dir) {
         `${dir}/index.html`,
         applyIndexTemplate({
             title: "He he",
-            content: renderToString(React.createElement(ArticleRoute)),
+            content: renderToString(React.createElement(BlogApp)),
         }),
         (err) => {},
     );
