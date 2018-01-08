@@ -3,10 +3,10 @@ const path = require("path");
 module.exports = {
     cache: true,
     // devtool: "eval",
-    entry: ["./src/client/client-loader.jsx"],
+    entry: ["./src/runtime/blog/blog-loader.jsx"],
     output: {
         path: `${__dirname}/dist/js`,
-        filename: "client-loader.js"
+        filename: "blog-loader.js"
     },
     performance: {
         hints: false, // enum

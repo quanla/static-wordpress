@@ -30,6 +30,7 @@ const Cacher = {
 
             },
             getUnresolvedPromises: () => unresolvedPromises,
+            getCache: () => cache,
         };
     }
 };

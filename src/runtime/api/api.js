@@ -1,13 +1,11 @@
 const DelegateUtil = require("../../common/utils/delegate-util").DelegateUtil;
 
-let apiImpl;
+let fetcher;
 
 const apiConfig = {
-    setApiImpl: (_apiImpl) => apiImpl = _apiImpl,
+    setFetcher: (_fetcher) => fetcher = _fetcher,
 };
 
 exports.apiConfig = apiConfig;
 
-const api = DelegateUtil.delegate(() => apiImpl, ["get", "put", "post", "delete"]);
-
-exports.api = api;
+exports.fetcher = DelegateUtil.delegate(() => fetcher, ["get", "put", "post", "delete"]);

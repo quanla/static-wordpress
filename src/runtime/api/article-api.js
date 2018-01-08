@@ -1,7 +1,7 @@
-const api = require("./api").api;
+const fetcher = require("./api").fetcher;
 const articleApi = {
     getArticleContent(path) {
-        return api.get(`${path}/content.md`);
+        return fetcher.get(`${path}/content.md`);
     },
 };
 
