@@ -11,13 +11,24 @@ export class ArticleRoute extends RComponent {
             articleContent: null,
         };
 
-        articleApi.getArticleContent("aaa").then((getArticleContent) => this.setState({getArticleContent}));
+        articleApi.getArticleContent("aaa").then((articleContent) => {
+            return this.setState({articleContent});
+        });
     }
 
     render() {
+        const {articleContent} = this.state;
         return (
             <div className="article-route">
-                He he he
+                {articleContent == null ? (
+                    <div className="">
+                        Loading...
+                    </div>
+                ) : (
+                    <div className="">
+                        {articleContent}
+                    </div>
+                )}
             </div>
         );
     }

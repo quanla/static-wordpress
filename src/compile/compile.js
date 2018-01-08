@@ -1,5 +1,7 @@
 const React = require("react");
 const fs = require("fs");
+const AsyncResolve = require("./async-resolve").AsyncResolve;
+const Cacher = require("./cacher").Cacher;
 const apiConfig = require("../runtime/api/api").apiConfig;
 const {renderToString} = require("react-dom/server");
 
@@ -8,10 +10,9 @@ const {BlogApp} = require("../runtime/blog/blog-app.jsx");
 
 global.h = React.createElement;
 
-apiConfig.setApiImpl({get: (url) => {
-    console.log(url);
-    return Promise.resolve("OOOO");
-}});
+
+let cacher = Cacher.createCacher((url) => Promise.resolve("OOOOO"));
+apiConfig.setApiImpl({get: (url) => cacher.execute(url)});
 
 let applyIndexTemplate = ((template)=> (vars) => {
     let content = template;
@@ -22,14 +23,22 @@ let applyIndexTemplate = ((template)=> (vars) => {
 })(fs.readFileSync(`${__dirname}/index.html`, "utf8"));
 
 function compileDir(dir) {
-    fs.writeFile(
-        `${dir}/index.html`,
-        applyIndexTemplate({
-            title: "He he",
-            content: renderToString(React.createElement(BlogApp)),
-        }),
-        (err) => {},
-    );
+    AsyncResolve.asyncResolve({
+        fn: () => renderToString(React.createElement(BlogApp)),
+        getUnresolvedPromises: cacher.getUnresolvedPromises,
+    })
+        .then((finalContent) => {
+            fs.writeFile(
+                `${dir}/index.html`,
+                applyIndexTemplate({
+                    title: "He he",
+                    content: finalContent,
+                }),
+                (err) => {},
+            );
+        })
+    ;
+
 }
 const Compile = {
     compileDir,
