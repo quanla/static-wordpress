@@ -12,12 +12,9 @@ export class ArticleRoute extends RComponent {
             article: null,
         };
 
-        // console.log(1);
         articleApi.getArticle("article").then((article) => {
-            // console.log(2);
             this.setState({article});
         });
-        // console.log(3);
     }
 
     render() {

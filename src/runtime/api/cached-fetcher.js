@@ -12,7 +12,6 @@ const CachedFetcher = {
             ...fetcher,
             get: (url, ...params) => {
                 if (cache.hasOwnProperty(url)) {
-                    console.log(url);
                     return instantResolve(cache[url]);
                 } else {
                     return fetcher.get.call(null, url, ...params);
