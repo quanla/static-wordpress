@@ -1,7 +1,15 @@
 const fetcher = require("./api").fetcher;
 const articleApi = {
-    getArticleContent(path) {
-        return fetcher.get(`/${path}/content.md`);
+    getArticle(path) {
+        return Promise.all([
+            fetcher.get(`/${path}/content.md`),
+            fetcher.get(`/${path}/manifest.json`),
+        ])
+            .then(([content, manifest]) => ({
+                title: manifest.title,
+                content,
+            }))
+        ;
     },
 };
 

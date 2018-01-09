@@ -9,24 +9,27 @@ export class ArticleRoute extends RComponent {
         super(props, context);
 
         this.state = {
-            articleContent: null,
+            article: null,
         };
 
-        articleApi.getArticleContent("article").then((articleContent) => {
-            this.setState({articleContent});
+        // console.log(1);
+        articleApi.getArticle("article").then((article) => {
+            // console.log(2);
+            this.setState({article});
         });
+        // console.log(3);
     }
 
     render() {
-        const {articleContent} = this.state;
+        const {article} = this.state;
         return (
             <div className="article-route">
-                {articleContent == null ? (
+                {article == null ? (
                     <div className="">
                         Loading...
                     </div>
                 ) : (
-                    <MarkDown value={articleContent}/>
+                    <MarkDown value={article.content}/>
                 )}
             </div>
         );

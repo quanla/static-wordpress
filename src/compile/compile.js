@@ -25,9 +25,7 @@ const Compile = {
 
         let getFileContent = (url) => {
             return new Promise((resolve, reject) => {
-                fs.readFile(src + url, "utf8", (err, content) => {
-                    resolve(content);
-                });
+                fs.readFile(src + url, "utf8", (err, content) => resolve(content));
             });
         };
 
@@ -36,27 +34,37 @@ const Compile = {
             let cacher = Cacher.createCacher(getFileContent);
             apiConfig.setFetcher({get: (url) => cacher.execute(url)});
 
-            mkdirp(`${dest}/${articleDir}`, (err) => {
+            const createDestDir = () => {
+                return new Promise((resolve, reject) => {
+                    mkdirp(`${dest}/${articleDir}`, (err) => {
+                        resolve();
+                    });
+                });
+            };
+            const readManifest = () => getFileContent(`/${articleDir}/manifest.json`).then((content) => JSON.parse(content));
 
+            Promise.all([
+                createDestDir(),
                 AsyncResolve.asyncResolve({
                     fn: () => renderToString(React.createElement(BlogApp)),
                     getUnresolvedPromises: cacher.getUnresolvedPromises,
-                })
-                    .then((finalContent) => {
-                        fs.writeFile(
-                            `${dest}/${articleDir}/index.html`,
-                            applyIndexTemplate({
-                                title: "He he",
-                                content: finalContent,
-                                cached_gets: JSON.stringify(Object.keys(cacher.getCache())),
-                            }),
-                            (err) => {},
-                        );
+                }),
+                readManifest(),
+            ])
+                .then(([_, reactSsrContent, manifest]) => {
+                    fs.writeFile(
+                        `${dest}/${articleDir}/index.html`,
+                        applyIndexTemplate({
+                            title: manifest.title,
+                            content: reactSsrContent,
+                            cached_gets: JSON.stringify(Object.keys(cacher.getCache())),
+                        }),
+                        (err) => {},
+                    );
 
-                        console.log(`Compiled article "${articleDir}"`);
-                    })
-                ;
-            });
+                    console.log(`Compiled article "${articleDir}"`);
+                })
+            ;
         }
         return {
             compileAll() {

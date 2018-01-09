@@ -28,6 +28,5 @@
     "react-dom": "^16.2.0"
   },
   "devDependencies": {
-    "require-nocache": "^1.0.0"
   }
 }

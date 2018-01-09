@@ -2,7 +2,6 @@ var gulp = require("gulp");
 var spawn = require('child_process').spawn;
 // let {Deploy} = require("./build/deploy");
 const chokidar = require("chokidar");
-var reload = require('require-nocache')(module);
 
 function cmd(cmd) {
     let split = cmd.split(" ");
@@ -11,6 +10,14 @@ function cmd(cmd) {
     } else {
         return spawn('cmd', ['/s', "/c"].concat(split), {stdio: "inherit"});
     }
+}
+
+function clearRequireCache(start) {
+    Object.keys(require.cache).forEach(function(key) {
+        if (key.startsWith(start)) {
+            delete require.cache[key];
+        }
+    });
 }
 
 gulp.task("build:watch", () => {
@@ -26,7 +33,9 @@ gulp.task("build:watch", () => {
     ;
 
     function compile() {
-        const {Compile} = reload("./src/compile/compile");
+        clearRequireCache(`${__dirname}/src`);
+
+        const {Compile} = require("./src/compile/compile");
         Compile.createCompiler(`${__dirname}/sample`,`${__dirname}/dist/deploy`).compileAll();
 
         gulp.src(`${__dirname}/sample/**/*.*`).pipe(gulp.dest(`${__dirname}/dist/deploy`));
@@ -46,7 +55,6 @@ gulp.task("build:watch", () => {
 });
 
 gulp.task("dev", ["build:watch"], () => {
-
     require("./src/dev/dev-server");
 });
 
