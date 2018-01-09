@@ -1,6 +1,5 @@
 var gulp = require("gulp");
 var spawn = require('child_process').spawn;
-// let {Deploy} = require("./build/deploy");
 const chokidar = require("chokidar");
 
 function cmd(cmd) {
@@ -20,17 +19,41 @@ function clearRequireCache(start) {
     });
 }
 
+function createStylusCompiler() {
+    return require("./src/build/stylus-compiler").createCompiler({
+        container: {
+            dir: `src/runtime/blog/common/style`,
+            file: "style.styl",
+        },
+        lookupDirs: [
+            `src/runtime/blog`
+        ],
+        distDir: `dist/css`,
+    });
+}
+
+
+const stylusCompiler = createStylusCompiler();
+
 gulp.task("build:watch", () => {
+    stylusCompiler.watch();
+
     cmd("webpack --watch");
 
-    chokidar
-        .watch("./dist/js/blog-loader.js", {
-            ignoreInitial: false
-        })
-        .on('all', function(event, path) {
-            gulp.src("./dist/js/blog-loader.js").pipe(gulp.dest("./dist/deploy/assets/js"));
-        })
-    ;
+    function watchCopy(file, destDir) {
+        chokidar
+            .watch(file, {
+                ignoreInitial: false
+            })
+            .on('all', function(event, path) {
+                gulp.src(file).pipe(gulp.dest(destDir));
+            })
+        ;
+    }
+
+    watchCopy("./dist/js/blog-loader.js", "./dist/deploy/assets/js");
+    watchCopy("./dist/css/style.css", "./dist/deploy/assets/css");
+
 
     function compile() {
         clearRequireCache(`${__dirname}/src`);

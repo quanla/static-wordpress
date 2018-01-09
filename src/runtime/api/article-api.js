@@ -4,8 +4,8 @@ const articleApi = {
     getArticle(path) {
 
         return AsyncUtil.all([
-            fetcher.get(`/${path}/content.md`),
-            fetcher.get(`/${path}/manifest.json`),
+            fetcher.get(`/article/${path}/content.md`),
+            fetcher.get(`/article/${path}/manifest.json`),
         ])
             .then(([content, manifest]) => ({
                 ... manifest,
