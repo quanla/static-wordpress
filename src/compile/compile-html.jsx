@@ -19,8 +19,8 @@ let applyIndexTemplate = ((template)=> (vars) => {
     return content;
 })(fs.readFileSync(`${__dirname}/index.html`, "utf8"));
 
-const CompileArticle = {
-    createCompileArticle(src, dest) {
+const CompileIndexHtml = {
+    createCompileIndexHtml(src, dest) {
 
         let getFileContent = (url) => {
             return new Promise((resolve, reject) => {
@@ -30,33 +30,33 @@ const CompileArticle = {
             });
         };
 
-        return (articleDir) => {
-            // console.log(`Compiling article "${articleDir}"`);
+        return (htmlDir) => {
+            console.log(`Compiling article "${htmlDir}"`);
             let cacher = Cacher.createCacher(getFileContent);
             apiConfig.setFetcher({get: (url) => cacher.execute(url)});
 
             const createDestDir = () => {
                 return new Promise((resolve, reject) => {
-                    mkdirp(`${dest}/article/${articleDir}`, (err) => {
+                    mkdirp(`${dest}/${htmlDir}`, (err) => {
                         resolve();
                     });
                 });
             };
-            Promise.all([
+            return Promise.all([
                 createDestDir(),
                 AsyncResolve.asyncResolve({
                     fn: () => renderToString(
-                        <StaticRouter location={"/article/fp-va-ioc/"} context={{}}>
+                        <StaticRouter location={`/${htmlDir}/`} context={{}}>
                             {renderRoutes(routes)}
                         </StaticRouter>
                     ),
                     getUnresolvedPromises: cacher.getUnresolvedPromises,
                 }),
-                getFileContent(`/article/${articleDir}/manifest.json`),
+                getFileContent(`/${htmlDir}/manifest.json`),
             ])
                 .then(([_, reactSsrContent, manifest]) => {
                     fs.writeFile(
-                        `${dest}/article/${articleDir}/index.html`,
+                        `${dest}/${htmlDir}/index.html`,
                         applyIndexTemplate({
                             title: manifest.title,
                             content: reactSsrContent,
@@ -65,11 +65,11 @@ const CompileArticle = {
                         (err) => {},
                     );
 
-                    console.log(`Compiled article "${articleDir}"`);
+                    console.log(`Compiled html "${htmlDir}"`);
                 })
             ;
         };
     }
 };
 
-exports.CompileArticle = CompileArticle;
+exports.CompileIndexHtml = CompileIndexHtml;

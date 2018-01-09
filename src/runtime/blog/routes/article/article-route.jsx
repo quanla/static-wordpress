@@ -1,7 +1,8 @@
 import classnames from "classnames";
-import {RComponent} from "../../common/r-component";
-import {articleApi} from "../api/article-api";
-import {MarkDown} from "./markdown";
+import {RComponent} from "../../../../common/r-component";
+import {articleApi} from "../../../api/article-api";
+import {MarkDown} from "../../markdown";
+import {AuthorPanel} from "./author-panel";
 
 export class ArticleRoute extends RComponent {
 
@@ -26,7 +27,14 @@ export class ArticleRoute extends RComponent {
                         Loading...
                     </div>
                 ) : (
-                    <MarkDown value={article.content}/>
+                    <div className="">
+                        <div className="author">
+                            <AuthorPanel id={article.author}/>
+                        </div>
+                        <div className="content">
+                            <MarkDown value={article.content}/>
+                        </div>
+                    </div>
                 )}
             </div>
         );
