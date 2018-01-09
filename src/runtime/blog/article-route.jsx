@@ -12,7 +12,7 @@ export class ArticleRoute extends RComponent {
             article: null,
         };
 
-        articleApi.getArticle("test1").then((article) => {
+        articleApi.getArticle("fp-va-ioc").then((article) => {
             this.setState({article});
         });
     }

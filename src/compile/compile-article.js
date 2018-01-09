@@ -21,12 +21,14 @@ const CompileArticle = {
 
         let getFileContent = (url) => {
             return new Promise((resolve, reject) => {
-                fs.readFile(src + url, "utf8", (err, content) => resolve(url.endsWith(".json") ? JSON.parse(content) : content));
+                fs.readFile(src + url, "utf8", (err, content) => {
+                    return resolve(url.endsWith(".json") ? JSON.parse(content) : content);
+                });
             });
         };
 
         return (articleDir) => {
-
+            // console.log(`Compiling article "${articleDir}"`);
             let cacher = Cacher.createCacher(getFileContent);
             apiConfig.setFetcher({get: (url) => cacher.execute(url)});
 
