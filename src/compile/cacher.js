@@ -1,11 +1,4 @@
-
-function instantResolve(value) {
-    return {
-        then: (fn) => {
-            fn(value);
-        }
-    };
-}
+const AsyncUtil = require("../common/utils/async-util").AsyncUtil;
 
 const Cacher = {
     createCacher(fn) {
@@ -16,7 +9,7 @@ const Cacher = {
         return {
             execute: (key) => {
                 if (cache.hasOwnProperty(key)) {
-                    return instantResolve(cache[key]);
+                    return AsyncUtil.instantResolve(cache[key]);
                 } else {
                     let promise = fn(key);
                     unresolvedPromises = unresolvedPromises.concat([promise]);

@@ -25,7 +25,7 @@ const Compile = {
 
         let getFileContent = (url) => {
             return new Promise((resolve, reject) => {
-                fs.readFile(src + url, "utf8", (err, content) => resolve(content));
+                fs.readFile(src + url, "utf8", (err, content) => resolve(url.endsWith(".json") ? JSON.parse(content) : content));
             });
         };
 
@@ -41,15 +41,13 @@ const Compile = {
                     });
                 });
             };
-            const readManifest = () => getFileContent(`/${articleDir}/manifest.json`).then((content) => JSON.parse(content));
-
             Promise.all([
                 createDestDir(),
                 AsyncResolve.asyncResolve({
                     fn: () => renderToString(React.createElement(BlogApp)),
                     getUnresolvedPromises: cacher.getUnresolvedPromises,
                 }),
-                readManifest(),
+                getFileContent(`/${articleDir}/manifest.json`),
             ])
                 .then(([_, reactSsrContent, manifest]) => {
                     fs.writeFile(
@@ -76,5 +74,4 @@ const Compile = {
         };
     }
 };
-
 exports.Compile = Compile;

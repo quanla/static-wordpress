@@ -1,10 +1,4 @@
-function instantResolve(value) {
-    return {
-        then: (fn) => {
-            fn(value);
-        }
-    };
-}
+const AsyncUtil = require("../../common/utils/async-util").AsyncUtil;
 
 const CachedFetcher = {
     createCachedFetcher(fetcher, cache) {
@@ -12,7 +6,7 @@ const CachedFetcher = {
             ...fetcher,
             get: (url, ...params) => {
                 if (cache.hasOwnProperty(url)) {
-                    return instantResolve(cache[url]);
+                    return AsyncUtil.instantResolve(cache[url]);
                 } else {
                     return fetcher.get.call(null, url, ...params);
                 }
