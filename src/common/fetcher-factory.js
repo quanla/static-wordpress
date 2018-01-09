@@ -1,6 +1,6 @@
 const O = require("./utils/object-util").O;
 const FetcherFactory = {
-    createFetcher({urlModifier, getHeaders}) {
+    createFetcher({urlModifier = (url) => url, getHeaders}) {
         let createHeaders = () => {
             let headers = new Headers();
             getHeaders && O.forEach(getHeaders(), (value, key) =>
@@ -23,7 +23,10 @@ const FetcherFactory = {
             return fetch(urlModifier(url), {
                 method,
                 headers
-            }).then((response) => response.json());
+            }).then((response) => {
+                let contentType = response.headers.get("content-type").replace(/; charset=.*/,"");
+                return contentType === "application/json" ? response.json() : response.text();
+            });
         };
 
         return {

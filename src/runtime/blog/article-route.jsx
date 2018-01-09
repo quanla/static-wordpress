@@ -12,8 +12,8 @@ export class ArticleRoute extends RComponent {
             articleContent: null,
         };
 
-        articleApi.getArticleContent("/sample/article").then((articleContent) => {
-            return this.setState({articleContent});
+        articleApi.getArticleContent("article").then((articleContent) => {
+            this.setState({articleContent});
         });
     }
 

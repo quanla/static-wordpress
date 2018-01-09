@@ -4,16 +4,26 @@ import ReactDOM from "react-dom";
 import {apiConfig} from "../api/api";
 import {FetcherFactory} from "../../common/fetcher-factory";
 import {CachedFetcher} from "../api/cached-fetcher";
+import {AsyncUtil} from "../../common/utils/async-util";
 
 window.React = React;
 
-apiConfig.setFetcher(CachedFetcher.createCachedFetcher(
-    FetcherFactory.createFetcher({}),
-    window.cached_api
-));
+let fetcher = FetcherFactory.createFetcher({});
 
-delete window.cached_api;
+let cachedGets = window.cached_gets;
+delete window.cached_gets;
 
-ReactDOM.hydrate((
-    <BlogApp/>
-), document.getElementById("app-container"));
+AsyncUtil.resolveToMap(cachedGets, fetcher.get).then((cachedGets) => {
+
+    apiConfig.setFetcher(CachedFetcher.createCachedFetcher(
+        fetcher,
+        cachedGets
+    ));
+
+    ReactDOM.hydrate((
+        <BlogApp/>
+    ), document.getElementById("app-container"));
+
+});
+
+
