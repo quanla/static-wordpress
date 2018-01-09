@@ -1,3 +1,5 @@
+import {routes} from "../runtime/blog/blog-routes";
+
 const React = require("react");
 const fs = require("fs");
 const mkdirp = require("mkdirp");
@@ -6,7 +8,8 @@ const Cacher = require("./cacher").Cacher;
 const apiConfig = require("../runtime/api/api").apiConfig;
 const {renderToString} = require("react-dom/server");
 
-const {BlogApp} = require("../runtime/blog/blog-app.jsx");
+import StaticRouter from 'react-router-dom/StaticRouter';
+import { renderRoutes } from 'react-router-config';
 
 let applyIndexTemplate = ((template)=> (vars) => {
     let content = template;
@@ -42,7 +45,11 @@ const CompileArticle = {
             Promise.all([
                 createDestDir(),
                 AsyncResolve.asyncResolve({
-                    fn: () => renderToString(React.createElement(BlogApp)),
+                    fn: () => renderToString(
+                        <StaticRouter location={"/article/fp-va-ioc/"} context={{}}>
+                            {renderRoutes(routes)}
+                        </StaticRouter>
+                    ),
                     getUnresolvedPromises: cacher.getUnresolvedPromises,
                 }),
                 getFileContent(`/article/${articleDir}/manifest.json`),
