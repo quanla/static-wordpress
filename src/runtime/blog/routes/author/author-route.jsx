@@ -1,6 +1,7 @@
 import classnames from "classnames";
 import {RComponent} from "../../../../common/r-component";
 import {authorApi} from "../../../api/author-api";
+import {Layout} from "../../layout/layout";
 
 export class AuthorRoute extends RComponent {
 
@@ -18,7 +19,10 @@ export class AuthorRoute extends RComponent {
     render() {
         const {author} = this.state;
         return (
-            <div className="article-route">
+            <Layout
+                className="article-route"
+                windowTitle={author && author.fullName}
+            >
                 {author == null ? (
                     <div className="">
                         Loading...
@@ -33,7 +37,7 @@ export class AuthorRoute extends RComponent {
                         </div>
                     </div>
                 )}
-            </div>
+            </Layout>
         );
     }
 }

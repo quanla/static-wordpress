@@ -30,8 +30,8 @@ const CompileIndexHtml = {
             });
         };
 
-        return (htmlDir) => {
-            console.log(`Compiling article "${htmlDir}"`);
+        return (htmlDir, manifestToTitle) => {
+            // console.log(`Compiling article "${htmlDir}"`);
             let cacher = Cacher.createCacher(getFileContent);
             apiConfig.setFetcher({get: (url) => cacher.execute(url)});
 
@@ -58,7 +58,7 @@ const CompileIndexHtml = {
                     fs.writeFile(
                         `${dest}/${htmlDir}/index.html`,
                         applyIndexTemplate({
-                            title: manifest.title,
+                            title: manifestToTitle(manifest),
                             content: reactSsrContent,
                             cached_gets: JSON.stringify(Object.keys(cacher.getCache())),
                         }),

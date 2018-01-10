@@ -3,6 +3,7 @@ import {RComponent} from "../../../../common/r-component";
 import {articleApi} from "../../../api/article-api";
 import {MarkDown} from "../../markdown";
 import {AuthorPanel} from "./author-panel";
+import {Layout} from "../../layout/layout";
 
 export class ArticleRoute extends RComponent {
 
@@ -21,7 +22,10 @@ export class ArticleRoute extends RComponent {
     render() {
         const {article} = this.state;
         return (
-            <div className="article-route">
+            <Layout
+                className="article-route"
+                windowTitle={article && article.title}
+            >
                 {article == null ? (
                     <div className="">
                         Loading...
@@ -36,7 +40,7 @@ export class ArticleRoute extends RComponent {
                         </div>
                     </div>
                 )}
-            </div>
+            </Layout>
         );
     }
 }

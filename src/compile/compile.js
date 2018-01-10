@@ -15,10 +15,14 @@ const Compile = {
             compileAll() {
                 let sequencePromise = Promise.resolve();
                 fs.readdir(src + "/article", (err, list) => {
-                    list.forEach((dir) => sequencePromise = sequencePromise.then(() => compileIndexHtml(`article/${dir}`)));
+                    list.forEach((dir) => sequencePromise = sequencePromise.then(() =>
+                        compileIndexHtml(`article/${dir}`, (manifest) => manifest.title)
+                    ));
                 });
                 fs.readdir(src + "/author", (err, list) => {
-                    list.forEach((dir) => sequencePromise = sequencePromise.then(() => compileIndexHtml(`author/${dir}`)));
+                    list.forEach((dir) => sequencePromise = sequencePromise.then(() =>
+                        compileIndexHtml(`author/${dir}`, (manifest) => manifest.fullName)
+                    ));
                 });
             }
         };
