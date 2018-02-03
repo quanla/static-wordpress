@@ -21,8 +21,6 @@ let applyIndexTemplate = ((template)=> (vars) => {
 
 const CompileIndexHtml = {
     compileIndexHtml(htmlDir, resolve, manifestToTitle) {
-
-        // console.log(`Compiling article "${htmlDir}"`);
         let apiResolve = (url) => resolve(url).then((content) => {
             if (url.endsWith(".json")) {
                 return JSON.parse(content);
@@ -34,12 +32,8 @@ const CompileIndexHtml = {
         return Promise.all([
             AsyncResolve.asyncResolve({
                 fn: () => {
-                    // console.log(routes);
-                    // console.log(htmlDir);
                     apiConfig.setFetcher({get: (url) => cacher.execute(url)});
-                    let a = renderRouterToString(`${htmlDir}/`, []);
-                    // console.log(a);
-                    return a;
+                    return renderRouterToString(`${htmlDir}/`, routes);
                 },
                 getUnresolvedPromises: cacher.getUnresolvedPromises,
             }),

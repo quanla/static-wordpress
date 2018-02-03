@@ -1,7 +1,7 @@
 
-const {renderToString} = require("react-dom/server");
-const StaticRouter = require('react-router-dom/StaticRouter');
-const {renderRoutes} = require('react-router-config');
+import {renderToString} from "react-dom/server";
+import StaticRouter from 'react-router-dom/StaticRouter';
+import {renderRoutes} from 'react-router-config';
 
 const renderRouterToString = (url, routes) => (
     renderToString(

@@ -12,7 +12,7 @@ const Path = require("path");
 
 let app = express();
 
-app.use(express.static("dist"));
+app.use("/assets", express.static("dist"));
 
 let resolveContent = ((rootContentDir)=> {
     let aliasContentGenerator = createAliasContentGenerator(rootContentDir, url => {
