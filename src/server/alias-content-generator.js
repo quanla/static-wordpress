@@ -7,14 +7,31 @@ const {promisify} = require('util');
 const readDir = promisify(fs.readdir); // (A)
 
 
-function createAliasContentGenerator(dir, resolve) {
-    return async () => {
-        let dirs = await readDir(`${dir}/article`);
-        return dirs.map((dir1) => ({
-            path: `/article/${dir1}/index.html`,
-            createContent: () => CompileIndexHtml.compileIndexHtml(`/article/${dir1}`, resolve, (manifest) => manifest.title),
-        }));
-    };
+function createAliasContentGenerators(dir, resolve) {
+
+    // Duplicated with routes
+    let indexFolderParents = [
+        {
+            folder: "article",
+            manifestToTitle: (manifest) => manifest.title,
+        },
+        {
+            folder: "author",
+            manifestToTitle: (manifest) => manifest.fullName,
+        },
+    ];
+    return [
+        ... indexFolderParents.map(({folder, manifestToTitle}) => (
+            async () => {
+                let dirs = await readDir(`${dir}/${folder}`);
+                return dirs.map((dir1) => ({
+                    path: `/${folder}/${dir1}/index.html`,
+                    createContent: () => CompileIndexHtml.compileIndexHtml(`/${folder}/${dir1}`, resolve, manifestToTitle),
+                }));
+            }
+        ))
+
+    ];
 }
 
-exports.createAliasContentGenerator = createAliasContentGenerator;
+exports.createAliasContentGenerators = createAliasContentGenerators;

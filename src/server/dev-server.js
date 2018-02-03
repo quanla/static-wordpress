@@ -1,7 +1,7 @@
 const express = require("express");
 const createResolveContent = require("./resolve-content").createResolveContent;
 const createContentRouter = require("./content-router").createContentRouter;
-const createAliasContentGenerator = require("./alias-content-generator").createAliasContentGenerator;
+const createAliasContentGenerators = require("./alias-content-generator").createAliasContentGenerators;
 const recursiveReaddir = require("recursive-readdir");
 const fs = require("fs");
 
@@ -15,10 +15,7 @@ let app = express();
 app.use("/assets", express.static("dist"));
 
 let resolveContent = ((rootContentDir)=> {
-    let aliasContentGenerator = createAliasContentGenerator(rootContentDir, url => {
-        console.log(`Side resolving ${url}`);
-        return resolveContent(url);
-    });
+    let aliasContentGenerators = createAliasContentGenerators(rootContentDir, url => resolveContent(url));
 
     function createFixedContentGenerator(dir) {
         return async () => {
@@ -26,7 +23,7 @@ let resolveContent = ((rootContentDir)=> {
             return files.map((absFilePath) => ({path: absFilePath.substring(dir.length), createContent: async () => readFile(absFilePath, "utf8")}))
         };
     }
-    return createResolveContent(createFixedContentGenerator(rootContentDir), aliasContentGenerator);
+    return createResolveContent(createFixedContentGenerator(rootContentDir), ...aliasContentGenerators);
 })(Path.resolve(`${__dirname}/../../sample`));
 
 app.use(createContentRouter(resolveContent));
