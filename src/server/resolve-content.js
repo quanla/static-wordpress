@@ -1,11 +1,19 @@
-async function resolveContent(url, contentGenerator) {
-    let allContent = await contentGenerator();
-    for (let i = 0; i < allContent.length; i++) {
-        let {path, createContent} = allContent[i];
-        if (url == path || url + "index.html" == path) {
-            return createContent();
+function createResolveContent(...contentGenerators) {
+    return async (url) => {
+        for (let i = 0; i < contentGenerators.length; i++) {
+            let contentGenerator = contentGenerators[i];
+
+            let contents = await contentGenerator();
+            for (let i = 0; i < contents.length; i++) {
+                let contentHolder = contents[i];
+                // console.log(contentHolder);
+                let {path, createContent} = contentHolder;
+                if (url == path || url + "index.html" == path) {
+                    return createContent();
+                }
+            }
         }
-    }
+    };
 }
 
-exports.resolveContent = resolveContent;
+exports.createResolveContent = createResolveContent;

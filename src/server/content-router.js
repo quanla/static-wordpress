@@ -1,15 +1,16 @@
-const resolveContent = require("./resolve-content").resolveContent;
 
-function createContentRouter(contentGenerator) {
+function createContentRouter(createResolveContent) {
 
     return async (req, res, next) => {
         let reqUrl = req.url;
 
-        let content = await resolveContent(reqUrl, contentGenerator);
+        // console.log(reqUrl);
+
+        let content = await createResolveContent(reqUrl);
         if (content != null) {
             if (reqUrl.endsWith("/") || reqUrl.endsWith(".html")) {
                 res.set('Content-Type', 'text/html');
-            } else if (path.endsWith(".json")) {
+            } else if (reqUrl.endsWith(".json")) {
                 res.set('Content-Type', 'application/json');
             }
             res.send(content);

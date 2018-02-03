@@ -5,7 +5,13 @@ export class WindowTitle extends RComponent {
     constructor(props, context) {
         super(props, context);
 
-        document.title = props.title;
+        setImmediate(() => {
+            try {
+                document.title = props.title;
+            } catch (e) {
+
+            }
+        });
     }
 
     componentWillReceiveProps(nextProps) {
