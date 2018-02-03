@@ -40,45 +40,46 @@ gulp.task("build:watch", () => {
 
     cmd("webpack --watch");
 
-    function watchCopy(file, destDir) {
-        chokidar
-            .watch(file, {
-                ignoreInitial: false
-            })
-            .on('all', function(event, path) {
-                gulp.src(file).pipe(gulp.dest(destDir));
-            })
-        ;
-    }
+    // function watchCopy(file, destDir) {
+    //     chokidar
+    //         .watch(file, {
+    //             ignoreInitial: false
+    //         })
+    //         .on('all', function(event, path) {
+    //             gulp.src(file).pipe(gulp.dest(destDir));
+    //
+    //         })
+    //     ;
+    // }
 
-    watchCopy("./dist/js/blog-loader.js", "./dist/deploy/assets/js");
-    watchCopy("./dist/css/style.css", "./dist/deploy/assets/css");
+    // watchCopy("./dist/js/blog-loader.js", "./dist/deploy/assets/js");
+    // watchCopy("./dist/css/style.css", "./dist/deploy/assets/css");
 
 
-    function compile() {
-        clearRequireCache(`${__dirname}/src`);
-
-        const {Compile} = require("./src/compile/compile");
-        Compile.createCompiler(`${__dirname}/sample`,`${__dirname}/dist/deploy`).compileAll();
-
-        gulp.src(`${__dirname}/sample/**/*.*`).pipe(gulp.dest(`${__dirname}/dist/deploy`));
-    }
-
-    compile();
-
-    chokidar
-        .watch("./src/compile/**/*.*", {
-            ignoreInitial: true
-        })
-        .on('all', function(event, path) {
-            compile();
-        })
-    ;
+    // function compile() {
+    //     clearRequireCache(`${__dirname}/src`);
+    //
+    //     const {Compile} = require("./src/server/compile");
+    //     Compile.createCompiler(`${__dirname}/sample`,`${__dirname}/dist/deploy`).compileAll();
+    //
+    //     gulp.src(`${__dirname}/sample/**/*.*`).pipe(gulp.dest(`${__dirname}/dist/deploy`));
+    // }
+    //
+    // compile();
+    //
+    // chokidar
+    //     .watch("./src/compile/**/*.*", {
+    //         ignoreInitial: true
+    //     })
+    //     .on('all', function(event, path) {
+    //         compile();
+    //     })
+    // ;
 
 });
 
 gulp.task("dev", ["build:watch"], () => {
-    require("./src/dev/dev-server");
+    require("./src/server/dev-server");
 });
 
 // gulp.task("deploy", [], () => {
