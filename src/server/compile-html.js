@@ -4,14 +4,11 @@ const fs = require("fs");
 const AsyncResolve = require("./async-resolve").AsyncResolve;
 const Cacher = require("./cacher").Cacher;
 const apiConfig = require("../runtime/api/api").apiConfig;
-const {renderToString} = require("react-dom/server");
 
 require("jsx-node").install();
 global.h = React.createElement;
 
-const {ArticleRoute} = require("../runtime/blog/routes/article/article-route");
-// const StaticRouter = require('react-router-dom/StaticRouter');
-const {renderRoutes} = require('react-router-config');
+const renderRouterToString = require("./render-router-tostring").renderRouterToString;
 const {routes} = require("../runtime/blog/blog-routes");
 
 let applyIndexTemplate = ((template)=> (vars) => {
@@ -26,20 +23,27 @@ const CompileIndexHtml = {
     compileIndexHtml(htmlDir, resolve, manifestToTitle) {
 
         // console.log(`Compiling article "${htmlDir}"`);
-        let cacher = Cacher.createCacher(resolve);
-        apiConfig.setFetcher({get: (url) => cacher.execute(url)});
+        let apiResolve = (url) => resolve(url).then((content) => {
+            if (url.endsWith(".json")) {
+                return JSON.parse(content);
+            } else {
+                return content;
+            }
+        });
+        let cacher = Cacher.createCacher(apiResolve);
         return Promise.all([
             AsyncResolve.asyncResolve({
                 fn: () => {
-                    let renderToString2 = renderToString(
-                        React.createElement(ArticleRoute, {match: {params: {slug: htmlDir.replace("/article/", "").replace("/", "")}}})
-                    );
-                    console.log(renderToString2);
-                    return renderToString2;
+                    // console.log(routes);
+                    // console.log(htmlDir);
+                    apiConfig.setFetcher({get: (url) => cacher.execute(url)});
+                    let a = renderRouterToString(`${htmlDir}/`, []);
+                    // console.log(a);
+                    return a;
                 },
                 getUnresolvedPromises: cacher.getUnresolvedPromises,
             }),
-            resolve(`/${htmlDir}/manifest.json`),
+            apiResolve(`${htmlDir}/manifest.json`),
         ])
             .then(([reactSsrContent, manifest]) => {
                 return applyIndexTemplate({

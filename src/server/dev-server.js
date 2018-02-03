@@ -15,12 +15,15 @@ let app = express();
 app.use(express.static("dist"));
 
 let resolveContent = ((rootContentDir)=> {
-    let aliasContentGenerator = createAliasContentGenerator(rootContentDir, url => resolveContent(url));
+    let aliasContentGenerator = createAliasContentGenerator(rootContentDir, url => {
+        console.log(`Side resolving ${url}`);
+        return resolveContent(url);
+    });
 
     function createFixedContentGenerator(dir) {
         return async () => {
             let files = await recursiveReaddir(dir);
-            return files.map((absFilePath) => ({path: absFilePath.substring(dir.length), createContent: async () => readFile(absFilePath)}))
+            return files.map((absFilePath) => ({path: absFilePath.substring(dir.length), createContent: async () => readFile(absFilePath, "utf8")}))
         };
     }
     return createResolveContent(createFixedContentGenerator(rootContentDir), aliasContentGenerator);
