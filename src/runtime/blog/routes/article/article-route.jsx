@@ -4,6 +4,8 @@ import {articleApi} from "../../../api/article-api";
 import {MarkDown} from "../../markdown";
 import {AuthorPanel} from "./author-panel";
 import {Layout} from "../../layout/layout";
+const moment = require("moment");
+const {Fragment} = require("react");
 
 export class ArticleRoute extends RComponent {
 
@@ -27,18 +29,32 @@ export class ArticleRoute extends RComponent {
                 windowTitle={article && article.title}
             >
                 {article == null ? (
-                    <div className="">
+                    <Fragment>
                         Loading...
-                    </div>
+                    </Fragment>
                 ) : (
-                    <div className="">
+                    <Fragment>
                         <div className="author">
-                            <AuthorPanel id={article.author}/>
+                            <AuthorPanel
+                                id={article.author}
+                                extra={
+                                    <div className="">
+                                        {moment(article.createdAt).format('ll')}
+                                    </div>
+                                }
+                            />
                         </div>
                         <div className="content">
+                            <div className="title">
+                                {article.title}
+                            </div>
+                            <div className="subtitle">
+                                {article.subtitle}
+                            </div>
+
                             <MarkDown value={article.content}/>
                         </div>
-                    </div>
+                    </Fragment>
                 )}
             </Layout>
         );

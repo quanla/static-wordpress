@@ -15,7 +15,7 @@ export class AuthorPanel extends RComponent {
     }
 
     render() {
-        const {id} = this.props;
+        const {id, extra} = this.props;
         const {author} = this.state;
 
         return (
@@ -30,6 +30,14 @@ export class AuthorPanel extends RComponent {
                         <Link to={`/author/${id}/`}>
                             {author.fullName}
                         </Link>
+
+                        <div className="sub-content">
+                            <div className="">
+                                {author.bio}
+                            </div>
+
+                            {extra}
+                        </div>
                     </div>
                 )}
             </div>

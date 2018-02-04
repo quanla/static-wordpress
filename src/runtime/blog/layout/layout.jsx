@@ -7,10 +7,16 @@ export class Layout extends RComponent {
     render() {
         const {className, children, windowTitle} = this.props;
         return (
-            <div className={classnames("layout", className)}>
+            <div className={classnames("layout")}>
                 <WindowTitle title={windowTitle && `${windowTitle} — Pure React`}/>
 
-                {children}
+                <div className="header">
+
+                </div>
+
+                <div className={classnames("content", className)}>
+                    {children}
+                </div>
             </div>
         );
     }
