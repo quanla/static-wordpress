@@ -1,6 +1,7 @@
 var gulp = require("gulp");
 var spawn = require('child_process').spawn;
-const chokidar = require("chokidar");
+const Path = require("path");
+const exportContent = require("./src/build/export-content").exportContent;
 
 function cmd(cmd) {
     let split = cmd.split(" ");
@@ -9,14 +10,6 @@ function cmd(cmd) {
     } else {
         return spawn('cmd', ['/s', "/c"].concat(split), {stdio: "inherit"});
     }
-}
-
-function clearRequireCache(start) {
-    Object.keys(require.cache).forEach(function(key) {
-        if (key.startsWith(start)) {
-            delete require.cache[key];
-        }
-    });
 }
 
 function createStylusCompiler() {
@@ -39,66 +32,25 @@ gulp.task("build:watch", () => {
     stylusCompiler.watch();
 
     cmd("webpack --watch");
-
-    // function watchCopy(file, destDir) {
-    //     chokidar
-    //         .watch(file, {
-    //             ignoreInitial: false
-    //         })
-    //         .on('all', function(event, path) {
-    //             gulp.src(file).pipe(gulp.dest(destDir));
-    //
-    //         })
-    //     ;
-    // }
-
-    // watchCopy("./dist/js/blog-loader.js", "./dist/deploy/assets/js");
-    // watchCopy("./dist/css/style.css", "./dist/deploy/assets/css");
-
-
-    // function compile() {
-    //     clearRequireCache(`${__dirname}/src`);
-    //
-    //     const {Compile} = require("./src/server/compile");
-    //     Compile.createCompiler(`${__dirname}/sample`,`${__dirname}/dist/deploy`).compileAll();
-    //
-    //     gulp.src(`${__dirname}/sample/**/*.*`).pipe(gulp.dest(`${__dirname}/dist/deploy`));
-    // }
-    //
-    // compile();
-    //
-    // chokidar
-    //     .watch("./src/compile/**/*.*", {
-    //         ignoreInitial: true
-    //     })
-    //     .on('all', function(event, path) {
-    //         compile();
-    //     })
-    // ;
-
 });
 
 gulp.task("dev", ["build:watch"], () => {
     require("./src/server/dev-server");
 });
+gulp.task("deploy", () => {
+    let webpack = cmd("webpack -p");
+    let deployDir = __dirname + "/deploy";
+    webpack.on("exit", () => {
+        gulp.src("./dist/**").pipe(gulp.dest(`${deployDir}/assets`));
+    });
 
-// gulp.task("deploy", [], () => {
-//     (()=> {
-//         return new Promise((resolve, reject) => {
-//
-//             let ps = cmd("webpack -p");
-//
-//             ps.on('close', (code) => {
-//                 if (code !== 0) {
-//                     console.log(`ps process exited with code ${code}`);
-//                     reject(code);
-//                 } else {
-//                     resolve();
-//                 }
-//
-//             });
-//         });
-//     })().then(() => {
-//         Deploy.doDeploy();
-//     });
-// });
+    const srcContentDir = Path.resolve(`${__dirname}/sample`);
+
+    exportContent(srcContentDir, (content, path) => {
+        const fs = require("fs");
+        const mkdirp = require("mkdirp");
+        mkdirp(Path.dirname(deployDir + path), (err) => {
+            fs.writeFile(deployDir + path, content, (err) => {});
+        });
+    });
+});

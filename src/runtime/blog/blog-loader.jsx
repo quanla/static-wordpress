@@ -13,6 +13,7 @@ window.React = React;
 let fetcher = FetcherFactory.createFetcher({});
 
 let cachedGets = window.cached_gets;
+// let cachedGets = [];
 delete window.cached_gets;
 
 AsyncUtil.resolveToMap(cachedGets, fetcher.get).then((cachedGets) => {

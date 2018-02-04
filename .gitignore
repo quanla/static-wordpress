@@ -1,5 +1,6 @@
 /package-lock.json
 /dist
+/deploy
 
 # dependencies
 /node_modules
