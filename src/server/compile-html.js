@@ -4,7 +4,6 @@ const Cacher = require("./cacher").Cacher;
 const apiConfig = require("../runtime/api/api").apiConfig;
 const renderRouterToString = require("./render-router-tostring").renderRouterToString;
 
-
 let applyIndexTemplate = ((template)=> (vars) => {
     let content = template;
     for (var k in vars) {
@@ -14,32 +13,25 @@ let applyIndexTemplate = ((template)=> (vars) => {
 })(fs.readFileSync(`${__dirname}/index.html`, "utf8"));
 
 const CompileIndexHtml = {
-    compileIndexHtml(htmlDir, resolve, manifestToTitle) {
+    compileIndexHtml(url, apiResolve, resolveOg) {
         const {routes} = require("../runtime/blog/blog-routes");
 
-        let apiResolve = (url) => resolve(url).then((content) => {
-            if (url.endsWith(".json")) {
-                return JSON.parse(content);
-            } else {
-                return content;
-            }
-        });
         let cacher = Cacher.createCacher(apiResolve);
         return Promise.all([
             AsyncResolve.asyncResolve({
                 fn: () => {
                     apiConfig.setFetcher({get: (url) => cacher.execute(url)});
-                    return renderRouterToString(`${htmlDir}/`, routes);
+                    return renderRouterToString(url, routes);
                 },
                 getUnresolvedPromises: cacher.getUnresolvedPromises,
             }),
-            apiResolve(`${htmlDir}/manifest.json`),
+            resolveOg(),
         ])
-            .then(([reactSsrContent, manifest]) => {
+            .then(([reactSsrContent, og]) => {
                 return applyIndexTemplate({
-                    title: manifestToTitle(manifest),
-                    content: reactSsrContent,
-                    cached_gets: JSON.stringify(Object.keys(cacher.getCache())),
+                        ...og ,
+                        content: reactSsrContent,
+                        cached_gets: JSON.stringify(Object.keys(cacher.getCache())),
                 });
             })
         ;

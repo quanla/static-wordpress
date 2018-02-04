@@ -5,7 +5,7 @@ export class WindowTitle extends RComponent {
     constructor(props, context) {
         super(props, context);
 
-        // document.title = props.title;
+        this.onMount(() => document.title = props.title);
     }
 
     componentWillReceiveProps(nextProps) {

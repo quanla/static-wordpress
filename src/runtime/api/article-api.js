@@ -13,6 +13,12 @@ const articleApi = {
             }))
         ;
     },
+    getArticleManifest(code) {
+        return fetcher.get(`/article/${code}/manifest.json`);
+    },
+    getAllArticles() {
+        return fetcher.get(`/articles.json`);
+    },
 };
 
 exports.articleApi = articleApi;

@@ -39,12 +39,14 @@ gulp.task("dev", ["build:watch"], () => {
 });
 gulp.task("deploy", () => {
     let webpack = cmd("webpack -p");
-    let deployDir = __dirname + "/deploy";
+    // let deployDir = __dirname + "/deploy";
+    let deployDir = "/Users/quanle/Documents/Workon/personal/quanla.github.io";
     webpack.on("exit", () => {
         gulp.src("./dist/**").pipe(gulp.dest(`${deployDir}/assets`));
     });
 
     const srcContentDir = Path.resolve(`${__dirname}/sample`);
+    gulp.src(`${srcContentDir}/**`).pipe(gulp.dest(deployDir));
 
     exportContent(srcContentDir, (content, path) => {
         const fs = require("fs");

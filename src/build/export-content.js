@@ -12,7 +12,7 @@ const exportContent = (rootContentDir, fn) => {
     let fixedContentGenerator = createFixedContentGenerator(rootContentDir);
     let resolveContent = createResolveContent(fixedContentGenerator, ...aliasContentGenerators);
 
-    [fixedContentGenerator, ...aliasContentGenerators].forEach(async (contentGenerator) => {
+    [...aliasContentGenerators].forEach(async (contentGenerator) => {
         let contents = await contentGenerator();
 
         for (let i = 0; i < contents.length; i++) {

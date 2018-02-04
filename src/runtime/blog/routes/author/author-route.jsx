@@ -3,6 +3,7 @@ import {RComponent} from "../../../../common/r-component";
 import {authorApi} from "../../../api/author-api";
 import {Layout} from "../../layout/layout";
 import {Link} from "react-router-dom";
+import {ArticlePreview} from "../common/article-preview";
 
 export class AuthorRoute extends RComponent {
 
@@ -25,7 +26,7 @@ export class AuthorRoute extends RComponent {
         const {author, articles} = this.state;
         return (
             <Layout
-                className="article-route"
+                className="author-route"
                 windowTitle={author && author.fullName}
             >
                 {author == null ? (
@@ -49,9 +50,7 @@ export class AuthorRoute extends RComponent {
                             </div>
 
                             {articles && articles.map((article, i) => (
-                                <Link to={`/article/${article}`} className="" key={i}>
-                                    {article}
-                                </Link>
+                                <ArticlePreview key={article} code={article}/>
                             ))}
                         </div>
                     </div>
