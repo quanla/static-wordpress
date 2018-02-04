@@ -26,7 +26,9 @@ export class AuthorPanel extends RComponent {
                     </div>
                 ) : (
                     <div className="">
-                        <img src={`/author/${id}/${author.image}`}/>
+                        <Link to={`/author/${id}/`}>
+                            <img src={`/author/${id}/${author.image}`}/>
+                        </Link>
                         <Link to={`/author/${id}/`}>
                             {author.fullName}
                         </Link>

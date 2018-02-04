@@ -1,7 +1,7 @@
 import classnames from "classnames";
 import {RComponent} from "../../../../common/r-component";
 import {articleApi} from "../../../api/article-api";
-import {MarkDown} from "../../markdown";
+import {MarkDownX} from "../../markdownx";
 import {AuthorPanel} from "./author-panel";
 import {Layout} from "../../layout/layout";
 const moment = require("moment");
@@ -44,7 +44,7 @@ export class ArticleRoute extends RComponent {
                                 }
                             />
                         </div>
-                        <div className="content">
+                        <div className="article">
                             <div className="title">
                                 {article.title}
                             </div>
@@ -52,7 +52,10 @@ export class ArticleRoute extends RComponent {
                                 {article.subtitle}
                             </div>
 
-                            <MarkDown value={article.content}/>
+                            <MarkDownX
+                                className="content"
+                                value={article.content}
+                            />
                         </div>
                     </Fragment>
                 )}

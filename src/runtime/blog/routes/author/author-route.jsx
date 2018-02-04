@@ -2,6 +2,7 @@ import classnames from "classnames";
 import {RComponent} from "../../../../common/r-component";
 import {authorApi} from "../../../api/author-api";
 import {Layout} from "../../layout/layout";
+import {Link} from "react-router-dom";
 
 export class AuthorRoute extends RComponent {
 
@@ -10,14 +11,18 @@ export class AuthorRoute extends RComponent {
 
         this.state = {
             author: null,
+            articles: null,
         };
         authorApi.getAuthor(props.match.params["id"]).then((author) => {
             this.setState({author});
         });
+        authorApi.getArticles(props.match.params["id"]).then((articles) => {
+            this.setState({articles});
+        });
     }
 
     render() {
-        const {author} = this.state;
+        const {author, articles} = this.state;
         return (
             <Layout
                 className="article-route"
@@ -30,10 +35,24 @@ export class AuthorRoute extends RComponent {
                 ) : (
                     <div className="">
                         <div className="">
-                            {author.fullName}
+                            <div className="">
+                                {author.fullName}
+                            </div>
+                            <div className="">
+                                {author.bio}
+                            </div>
                         </div>
+
                         <div className="">
-                            {author.bio}
+                            <div className="">
+                                Articles:
+                            </div>
+
+                            {articles && articles.map((article, i) => (
+                                <Link to={`/article/${article}`} className="" key={i}>
+                                    {article}
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 )}

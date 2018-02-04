@@ -1,10 +1,28 @@
 .article-route {
 
   max-width: 740px;
+  padding: 0 20px;
   margin 0 auto;
 
-  & > .content > .title {
-    font-size 39px;
-    font-weight 600;
+  & > .article {
+    & > .title {
+      font-size 39px;
+      font-weight 600;
+    }
+    & > .subtitle {
+      font-size 22px;
+      font-weight 500;
+      color rgba(black, 0.54);
+    }
+    & > .content {
+      color rgba(black, 0.84);
+      font-size 16px;
+      line-height 30px;
+      @media (min-width: 769px) {
+        font-size 18px;
+        line-height 33px;
+      }
+
+    }
   }
 }
