@@ -12,6 +12,8 @@ function createContentRouter(createResolveContent) {
                 res.set('Content-Type', 'text/html');
             } else if (reqUrl.endsWith(".json")) {
                 res.set('Content-Type', 'application/json');
+            } else if (reqUrl.endsWith(".jpg")) {
+                res.set('Content-Type', 'image/jpg');
             }
             res.send(content);
         } else {

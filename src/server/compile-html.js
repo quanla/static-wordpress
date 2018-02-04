@@ -1,15 +1,9 @@
-
-const React = require("react");
 const fs = require("fs");
 const AsyncResolve = require("./async-resolve").AsyncResolve;
 const Cacher = require("./cacher").Cacher;
 const apiConfig = require("../runtime/api/api").apiConfig;
-
-require("jsx-node").install();
-global.h = React.createElement;
-
 const renderRouterToString = require("./render-router-tostring").renderRouterToString;
-const {routes} = require("../runtime/blog/blog-routes");
+
 
 let applyIndexTemplate = ((template)=> (vars) => {
     let content = template;
@@ -21,6 +15,8 @@ let applyIndexTemplate = ((template)=> (vars) => {
 
 const CompileIndexHtml = {
     compileIndexHtml(htmlDir, resolve, manifestToTitle) {
+        const {routes} = require("../runtime/blog/blog-routes");
+
         let apiResolve = (url) => resolve(url).then((content) => {
             if (url.endsWith(".json")) {
                 return JSON.parse(content);

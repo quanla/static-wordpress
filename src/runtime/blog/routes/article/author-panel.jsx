@@ -19,13 +19,14 @@ export class AuthorPanel extends RComponent {
         const {author} = this.state;
 
         return (
-            <div className="">
+            <div className="author-panel">
                 {author == null ? (
                     <div className="">
                         Loading...
                     </div>
                 ) : (
                     <div className="">
+                        <img src={`/author/${id}/${author.image}`}/>
                         <Link to={`/author/${id}/`}>
                             {author.fullName}
                         </Link>

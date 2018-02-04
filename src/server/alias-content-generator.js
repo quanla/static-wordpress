@@ -3,9 +3,7 @@ const CompileIndexHtml = require("./compile-html").CompileIndexHtml;
 
 const {promisify} = require('util');
 
-// const readFile = promisify(fs.readFile); // (A)
 const readDir = promisify(fs.readdir); // (A)
-
 
 function createAliasContentGenerators(dir, resolve) {
 

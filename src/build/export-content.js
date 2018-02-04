@@ -1,3 +1,7 @@
+
+require("jsx-node").install();
+global.h = require("react").createElement;
+
 const createAliasContentGenerators = require("../server/alias-content-generator").createAliasContentGenerators;
 const createFixedContentGenerator = require("../server/fixed-content-generator").createFixedContentGenerator;
 const createResolveContent = require("../server/resolve-content").createResolveContent;
